@@ -15,6 +15,8 @@ import java.util.Random;
 public class FunFactsActivity extends AppCompatActivity {
 
     public static final String TAG = FunFactsActivity.class.getSimpleName();
+    private static final String KEY_FACT = "KEY_FACT";
+    private static final String KEY_COLOR = "KEY_COLOR";
 
     // declare view variables
     private TextView mFactTextView;
@@ -22,6 +24,27 @@ public class FunFactsActivity extends AppCompatActivity {
     private FactBook mFactBook = new FactBook();
     private ColorWheel mColorWheel = new ColorWheel();
     private RelativeLayout mRelativeLayout;
+    private String mFact = mFactBook.mFacts[0];
+    private int mColor = Color.parseColor(mColorWheel.mColors[8]);
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        
+        outState.putString(KEY_FACT,mFact);
+        outState.putInt(KEY_COLOR,mColor);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        mFact = savedInstanceState.getString(KEY_FACT);
+        mColor = savedInstanceState.getInt(KEY_COLOR);
+        mFactTextView.setText(mFact);
+        mRelativeLayout.setBackgroundColor(mColor);
+        mShowFactButton.setTextColor(mColor);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +63,13 @@ public class FunFactsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String fact = mFactBook.getFact();
-                int color = mColorWheel.getColor();
+                mFact = mFactBook.getFact();
+                mColor = mColorWheel.getColor();
 
                 // Update the screen with our dynamic fact
-                mFactTextView.setText(fact);
-                mRelativeLayout.setBackgroundColor(color);
-                mShowFactButton.setTextColor(color);
+                mFactTextView.setText(mFact);
+                mRelativeLayout.setBackgroundColor(mColor);
+                mShowFactButton.setTextColor(mColor);
             }
         };
         mShowFactButton.setOnClickListener(listener);
